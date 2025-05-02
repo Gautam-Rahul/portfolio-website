@@ -4,6 +4,10 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // Base URL for GitHub Pages deployment
+  // Change 'portfolio-website' to your GitHub repository name
+  base: '/portfolio-website/',
+  
   plugins: [react()],
   resolve: {
     alias: {
