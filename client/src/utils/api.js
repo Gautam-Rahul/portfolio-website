@@ -13,9 +13,11 @@ export const getApiUrl = () => {
   
   // For GitHub Pages deployment, use the Vercel backend URL
   if (window.location.hostname.includes('github.io') || 
-      window.location.hostname.includes('gautam-rahul.github.io')) {
-    console.log('Detected GitHub Pages, using Vercel backend');
-    return 'https://portfolio-webite-server.vercel.app/api';
+      window.location.hostname.includes('gautam-rahul.github.io') ||
+      window.location.hostname.includes('rahulgtm.com')) {
+    console.log('Detected GitHub Pages or custom domain, using Vercel backend');
+    // We'll update this URL after deploying the test server
+    return 'https://portfolio-webite-test.vercel.app/api';
   }
   
   // For any non-localhost environment, use the Vercel backend
