@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "index.js",
+      "src": "test-server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/index.js",
+      "dest": "/test-server.js",
       "headers": {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
@@ -17,16 +17,8 @@
       }
     },
     {
-      "src": "/uploads/(.*)",
-      "dest": "/uploads/$1",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable",
-        "Access-Control-Allow-Origin": "*"
-      }
-    },
-    {
       "src": "/(.*)",
-      "dest": "/index.js",
+      "dest": "/test-server.js",
       "headers": {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
