@@ -30,6 +30,10 @@ const app = express();
 // List of allowed origins for CORS
 const allowedOrigins = [
   'https://portfolio-website-theta-ten-47.vercel.app',
+  'https://www.rahulgtm.com',
+  'https://rahulgtm.com',
+  'https://www.rahulgtm.com/#',
+  'https://www.rahulgtm.com/#/',
   'https://gautam-rahul.github.io',
   'https://gautam-rahul.github.io/portfolio-website',
   'http://localhost:5173',
@@ -42,14 +46,21 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps, curl requests)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.some(allowed => origin.startsWith(allowed)) || process.env.NODE_ENV !== 'production') {
       callback(null, true);
     } else {
+      console.log('CORS blocked origin:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Add CORS pre-flight handling
+app.options('*', cors());
+
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
