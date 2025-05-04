@@ -8,6 +8,13 @@ export default defineConfig(({ mode }) => {
   // Check for VERCEL environment variable which is set in Vercel deployments
   const isVercel = process.env.VERCEL === '1';
   
+  // Log environment variables to help debug
+  console.log('Building with settings:', {
+    isProduction,
+    isVercel,
+    base: isProduction && !isVercel ? './' : '/'
+  });
+  
   return {
     // Base URL for deployment
     // - For GitHub Pages: use './' (relative paths)
