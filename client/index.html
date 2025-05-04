@@ -2,10 +2,27 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Rahul Gautam - Full Stack Developer Portfolio" />
     <title>Rahul Gautam | Portfolio</title>
+    <!-- Start detection script for deployment platform -->
+    <script>
+      // Check if we're on Vercel 
+      if (window.location.hostname.includes('vercel.app')) {
+        // Remove any "/portfolio-website" prefix from paths since Vercel uses root paths
+        document.addEventListener('DOMContentLoaded', function() {
+          document.querySelectorAll('link[href^="/portfolio-website/"], script[src^="/portfolio-website/"]').forEach(el => {
+            if (el.href) {
+              el.href = el.href.replace('/portfolio-website/', '/');
+            } else if (el.src) {
+              el.src = el.src.replace('/portfolio-website/', '/');
+            }
+          });
+        });
+      }
+    </script>
+    <!-- End detection script -->
     <!-- Start Single Page Apps for GitHub Pages -->
     <script type="text/javascript">
       // Single Page Apps for GitHub Pages

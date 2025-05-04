@@ -5,11 +5,15 @@ import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production';
+  // Check for VERCEL environment variable which is set in Vercel deployments
+  const isVercel = process.env.VERCEL === '1';
   
   return {
-    // Base URL for GitHub Pages deployment - only in production
-    // For development, use the default root path
-    base: isProduction ? '/portfolio-website/' : '/',
+    // Base URL for deployment
+    // - For GitHub Pages: use './' (relative paths)
+    // - For Vercel: use '/' (root paths)
+    // - For development: use '/' (root paths)
+    base: isProduction && !isVercel ? './' : '/',
     
     plugins: [react()],
     resolve: {
@@ -20,6 +24,10 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'dist',
       sourcemap: true,
+      // Use relative paths for assets
+      assetsDir: 'assets',
+      // Ensure assets use relative paths
+      assetsInlineLimit: 0,
     },
     server: {
       port: 5173,
