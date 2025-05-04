@@ -3,23 +3,27 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  // Base URL for GitHub Pages deployment
-  // Change 'portfolio-website' to your GitHub repository name
-  base: '/portfolio-website/',
+export default defineConfig(({ mode }) => {
+  const isProduction = mode === 'production';
   
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
+  return {
+    // Base URL for GitHub Pages deployment - only in production
+    // For development, use the default root path
+    base: isProduction ? '/portfolio-website/' : '/',
+    
+    plugins: [react()],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
     },
-  },
-  build: {
-    outDir: 'dist',
-    sourcemap: true,
-  },
-  server: {
-    port: 5173,
-    open: true,
-  },
+    build: {
+      outDir: 'dist',
+      sourcemap: true,
+    },
+    server: {
+      port: 5173,
+      open: true,
+    },
+  };
 }); 

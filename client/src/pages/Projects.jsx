@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { FaGithub, FaExternalLinkAlt, FaSearch } from 'react-icons/fa';
 import Loader from '../components/Loader';
+import api from '../utils/api';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -17,7 +17,7 @@ const Projects = () => {
     const fetchProjects = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`${API_URL}/projects`);
+        const { data } = await api.get('/projects');
         
         if (data.success) {
           setProjects(data.projects);

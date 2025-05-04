@@ -1,9 +1,7 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 
 const AuthContext = createContext();
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export const useAuth = () => {
   return useContext(AuthContext);
@@ -13,9 +11,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Initialize axios with credentials
-  axios.defaults.withCredentials = true;
 
   // Load user data from localStorage on mount
   useEffect(() => {
@@ -29,11 +24,8 @@ export const AuthProvider = ({ children }) => {
           return;
         }
         
-        // Set authorization header
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        
-        // Fetch current user
-        const { data } = await axios.get(`${API_URL}/auth/me`);
+        // Fetch current user using our API utility with auto token handling
+        const { data } = await api.get('/auth/me');
         
         if (data.success) {
           setUser(data.user);
@@ -42,7 +34,6 @@ export const AuthProvider = ({ children }) => {
         console.error('Failed to load user:', err);
         // Clear token if it's invalid
         localStorage.removeItem('token');
-        delete axios.defaults.headers.common['Authorization'];
       } finally {
         setLoading(false);
       }
@@ -58,15 +49,9 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       
       console.log('Attempting login with email:', email);
-      console.log('API URL:', `${API_URL}/auth/login`);
 
-      // Simple login without extra headers or complex options
-      const response = await axios({
-        method: 'post',
-        url: `${API_URL}/auth/login`,
-        data: { email, password },
-        headers: { 'Content-Type': 'application/json' }
-      });
+      // Use the API utility for login
+      const response = await api.post('/auth/login', { email, password });
       
       console.log('Login response:', response.data);
       
@@ -74,7 +59,6 @@ export const AuthProvider = ({ children }) => {
         setUser(response.data.user);
         const token = response.data.token;
         localStorage.setItem('token', token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         return true;
       } else {
         throw new Error(response.data.message || 'Login failed');
@@ -99,14 +83,13 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       setLoading(true);
-      await axios.post(`${API_URL}/auth/logout`);
+      await api.post('/auth/logout');
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
       // Clear user state and localStorage
       setUser(null);
       localStorage.removeItem('token');
-      delete axios.defaults.headers.common['Authorization'];
       setLoading(false);
     }
   };

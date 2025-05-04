@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { FaUpload, FaFileAlt, FaCheck, FaDownload, FaTrash, FaTimes } from 'react-icons/fa';
 import Loader from '../../components/Loader';
+import api from '../../utils/api';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -9,17 +9,17 @@ const ManageResume = () => {
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [uploadLoading, setUploadLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   
-  // Fetch all resumes
+  // Fetch resumes
   useEffect(() => {
     const fetchResumes = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`${API_URL}/resume/all`);
+        const { data } = await api.get('/resume/all');
         
         if (data.success) {
           setResumes(data.resumes);
@@ -37,7 +37,7 @@ const ManageResume = () => {
   
   // Handle file selection
   const handleFileChange = (e) => {
-    if (e.target.files.length > 0) {
+    if (e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
     }
   };
@@ -51,11 +51,6 @@ const ManageResume = () => {
       return;
     }
     
-    if (selectedFile.type !== 'application/pdf') {
-      setError('Only PDF files are allowed');
-      return;
-    }
-    
     try {
       setUploadLoading(true);
       setError(null);
@@ -63,7 +58,7 @@ const ManageResume = () => {
       const formData = new FormData();
       formData.append('resume', selectedFile);
       
-      const response = await axios.post(`${API_URL}/resume/upload`, formData, {
+      const response = await api.post('/resume/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -71,7 +66,7 @@ const ManageResume = () => {
       
       if (response.data.success) {
         // Refresh resumes list
-        const { data } = await axios.get(`${API_URL}/resume/all`);
+        const { data } = await api.get('/resume/all');
         setResumes(data.resumes);
         
         // Reset file input
@@ -86,12 +81,12 @@ const ManageResume = () => {
     }
   };
   
-  // Handle setting active resume
+  // Set resume as active
   const handleSetActive = async (resumeId) => {
     try {
       setActionLoading(true);
       
-      const response = await axios.put(`${API_URL}/resume/activate/${resumeId}`);
+      const response = await api.put(`/resume/activate/${resumeId}`);
       
       if (response.data.success) {
         // Update resumes list in state
@@ -103,19 +98,19 @@ const ManageResume = () => {
         );
       }
     } catch (err) {
-      console.error('Error setting active resume:', err);
-      setError(err.response?.data?.message || 'Failed to set active resume. Please try again.');
+      console.error('Error setting resume as active:', err);
+      setError(err.response?.data?.message || 'Failed to set resume as active. Please try again.');
     } finally {
       setActionLoading(false);
     }
   };
   
-  // Handle deleting a resume
+  // Delete a resume
   const handleDelete = async (resumeId) => {
     try {
       setActionLoading(true);
       
-      const response = await axios.delete(`${API_URL}/resume/${resumeId}`);
+      const response = await api.delete(`/resume/${resumeId}`);
       
       if (response.data.success) {
         // Remove deleted resume from state

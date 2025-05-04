@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaPaperPlane } from 'react-icons/fa';
 import Map from 'react-map-gl';
+import api from '../utils/api';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const MAPBOX_TOKEN = 'pk.eyJ1IjoicmFodWxndG0xMTQiLCJhIjoiY2xzbDR6cHRrMHI3ejJrcGZ0bHFsdXNuZCJ9.eRjSdwJkLlJt0oGdMGDUYw';
@@ -10,11 +10,12 @@ const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    subject: '',
     message: ''
   });
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
   
   // Define location coordinates for the map
   const mapViewState = {
@@ -26,16 +27,19 @@ const Contact = () => {
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
   
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validation
+    // Simple validation
     if (!formData.name || !formData.email || !formData.message) {
-      setError('Please fill out all fields');
+      setError('Please fill out all required fields');
       return;
     }
     
@@ -43,19 +47,20 @@ const Contact = () => {
       setLoading(true);
       setError(null);
       
-      const response = await axios.post(`${API_URL}/contact`, formData);
+      const response = await api.post('/contact', formData);
       
       if (response.data.success) {
         setSuccess(true);
         setFormData({
           name: '',
           email: '',
+          subject: '',
           message: ''
         });
       }
     } catch (err) {
-      console.error('Error submitting form:', err);
-      setError(err.response?.data?.message || 'Something went wrong. Please try again later.');
+      console.error('Error sending message:', err);
+      setError(err.response?.data?.message || 'Failed to send message. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -189,6 +194,23 @@ const Contact = () => {
                       onChange={handleChange}
                       className="input"
                       placeholder="Your email address"
+                      required
+                    />
+                  </div>
+                  
+                  {/* Subject */}
+                  <div className="mb-6">
+                    <label htmlFor="subject" className="block text-gray-700 dark:text-gray-300 mb-2">
+                      Subject
+                    </label>
+                    <input
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      className="input"
+                      placeholder="Subject of your message"
                       required
                     />
                   </div>

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import axios from 'axios';
 import { FaDownload, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import Loader from '../components/Loader';
+import api from '../utils/api';
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -15,31 +15,15 @@ const Resume = () => {
   const [error, setError] = useState(null);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-  const [width, setWidth] = useState(window.innerWidth);
+  const [scale, setScale] = useState(1.2);
+  const fileRef = useRef(null);
   
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      setWidth(window.innerWidth);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
-  // Calculate the PDF scale based on window width
-  const getScale = () => {
-    if (width < 768) return 0.6;
-    if (width < 1024) return 0.8;
-    return 1.0;
-  };
-  
-  // Fetch resume from API
+  // Fetch resume URL
   useEffect(() => {
     const fetchResume = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`${API_URL}/resume/active`);
+        const { data } = await api.get('/resume/active');
         
         if (data.success) {
           setResumeUrl(`${API_URL}${data.resume.path}`);
@@ -120,7 +104,7 @@ const Resume = () => {
             >
               <Page 
                 pageNumber={pageNumber} 
-                scale={getScale()}
+                scale={scale}
                 renderTextLayer={false}
                 renderAnnotationLayer={false}
                 className="shadow-lg"

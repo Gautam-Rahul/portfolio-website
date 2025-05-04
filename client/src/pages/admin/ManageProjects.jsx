@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { FaPlus, FaEdit, FaTrash, FaEye, FaCheck, FaTimes, FaStar } from 'react-icons/fa';
 import Loader from '../../components/Loader';
+import { useAuth } from '../../context/AuthContext';
+import api from '../../utils/api';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const ManageProjects = () => {
+  const { user } = useAuth();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,7 +33,7 @@ const ManageProjects = () => {
     const fetchProjects = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`${API_URL}/projects`);
+        const { data } = await api.get('/projects');
         
         if (data.success) {
           setProjects(data.projects);
@@ -116,7 +118,11 @@ const ManageProjects = () => {
       const formDataObj = new FormData();
       formDataObj.append('title', formData.title);
       formDataObj.append('description', formData.description);
-      formDataObj.append('technologies', formData.technologies);
+      
+      // Process technologies string into an array
+      const techArray = formData.technologies.split(',').map(tech => tech.trim());
+      formDataObj.append('technologies', JSON.stringify(techArray));
+      
       formDataObj.append('liveLink', formData.liveLink);
       formDataObj.append('repoLink', formData.repoLink);
       formDataObj.append('featured', formData.featured);
@@ -129,13 +135,13 @@ const ManageProjects = () => {
       let response;
       
       if (formMode === 'add') {
-        response = await axios.post(`${API_URL}/projects`, formDataObj, {
+        response = await api.post('/projects', formDataObj, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
       } else {
-        response = await axios.put(`${API_URL}/projects/${currentProject._id}`, formDataObj, {
+        response = await api.put(`/projects/${currentProject._id}`, formDataObj, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -144,7 +150,7 @@ const ManageProjects = () => {
       
       if (response.data.success) {
         // Refresh projects list
-        const { data } = await axios.get(`${API_URL}/projects`);
+        const { data } = await api.get('/projects');
         setProjects(data.projects);
         
         // Reset form
@@ -189,7 +195,7 @@ const ManageProjects = () => {
     try {
       setSubmitLoading(true);
       
-      const response = await axios.delete(`${API_URL}/projects/${projectId}`);
+      const response = await api.delete(`/projects/${projectId}`);
       
       if (response.data.success) {
         // Remove project from state

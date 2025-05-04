@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { FaProjectDiagram, FaFileAlt, FaEnvelope, FaCalendarAlt } from 'react-icons/fa';
 import Loader from '../../components/Loader';
+import api from '../../utils/api';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -24,15 +24,15 @@ const Dashboard = () => {
       try {
         setLoading(true);
         
-        // Fetch projects count
-        const projectsResponse = await axios.get(`${API_URL}/projects`);
+        // Fetch project stats
+        const projectsResponse = await api.get('/projects');
         
         // Fetch messages stats
-        const messagesResponse = await axios.get(`${API_URL}/contact`);
-        const unreadCount = await axios.get(`${API_URL}/contact/unread-count`);
+        const messagesResponse = await api.get('/contact');
+        const unreadCount = await api.get('/contact/unread-count');
         
         // Fetch resumes count
-        const resumesResponse = await axios.get(`${API_URL}/resume/all`);
+        const resumesResponse = await api.get('/resume/all');
         
         setStats({
           projects: projectsResponse.data.count || 0,
@@ -44,7 +44,7 @@ const Dashboard = () => {
         });
       } catch (err) {
         console.error('Error fetching dashboard stats:', err);
-        setError('Failed to load dashboard data');
+        setError('Failed to load dashboard data. Please try again later.');
       } finally {
         setLoading(false);
       }
