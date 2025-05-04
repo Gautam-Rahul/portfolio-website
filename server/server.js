@@ -25,11 +25,27 @@ const PORT = process.env.PORT || 5000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// List of allowed origins for CORS
+const allowedOrigins = [
+  'https://portfolio-website-theta-ten-47.vercel.app',
+  'https://gautam-rahul.github.io',
+  'https://gautam-rahul.github.io/portfolio-website',
+  'http://localhost:5173',
+  'http://localhost:5174'
+];
+
 // Middleware
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? 'https://portfolio-client.vercel.app' 
-    : ['http://localhost:5173', 'http://localhost:5174'],
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());

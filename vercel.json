@@ -1,12 +1,15 @@
 {
   "version": 2,
-  "builds": [
+  "buildCommand": "cd server && npm install",
+  "outputDirectory": "server",
+  "rewrites": [
     {
-      "src": "client/package.json",
-      "use": "@vercel/node"
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "/uploads/:path*"
     }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "/client/dist/$1" }
   ]
 } 
