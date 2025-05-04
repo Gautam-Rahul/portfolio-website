@@ -2,17 +2,30 @@ import axios from 'axios';
 
 // Get the API URL from environment variables, with fallbacks for different environments
 export const getApiUrl = () => {
+  // Add debugging to check hostname
+  console.log('Current hostname:', window.location.hostname);
+  
   // For production builds, use the VITE_API_URL from environment variables
   if (import.meta.env.VITE_API_URL) {
+    console.log('Using VITE_API_URL:', import.meta.env.VITE_API_URL);
     return import.meta.env.VITE_API_URL;
   }
   
   // For GitHub Pages deployment, use the Vercel backend URL
-  if (window.location.hostname.includes('github.io')) {
+  if (window.location.hostname.includes('github.io') || 
+      window.location.hostname.includes('gautam-rahul.github.io')) {
+    console.log('Detected GitHub Pages, using Vercel backend');
+    return 'https://portfolio-webite-server.vercel.app/api';
+  }
+  
+  // For any non-localhost environment, use the Vercel backend
+  if (window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')) {
+    console.log('Non-localhost environment detected, using Vercel backend');
     return 'https://portfolio-webite-server.vercel.app/api';
   }
   
   // For local development, default to localhost
+  console.log('Defaulting to localhost');
   return 'http://localhost:5000/api';
 };
 

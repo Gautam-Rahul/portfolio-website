@@ -10,14 +10,21 @@ export const getFileUrl = (filePath) => {
   if (!filePath) return '';
   
   const apiBaseUrl = getApiUrl();
+  console.log('File URL base:', apiBaseUrl);
   
-  // For Vercel deployment or GitHub Pages deployment, use the special uploads endpoint
-  if (apiBaseUrl.includes('vercel.app') || window.location.hostname.includes('github.io')) {
-    return `${apiBaseUrl}/uploads?filename=${encodeURIComponent(filePath)}`;
+  // For Vercel deployment, GitHub Pages deployment, or any non-localhost environment
+  if (apiBaseUrl.includes('vercel.app') || 
+      window.location.hostname.includes('github.io') || 
+      (window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1'))) {
+    const fileUrl = `${apiBaseUrl}/uploads?filename=${encodeURIComponent(filePath)}`;
+    console.log('Using production file URL:', fileUrl);
+    return fileUrl;
   }
   
   // For local development, use the direct path
-  return `${apiBaseUrl.replace('/api', '')}/uploads/${filePath}`;
+  const localFileUrl = `${apiBaseUrl.replace('/api', '')}/uploads/${filePath}`;
+  console.log('Using local file URL:', localFileUrl);
+  return localFileUrl;
 };
 
 /**
