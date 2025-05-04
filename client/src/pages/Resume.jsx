@@ -2,12 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { FaDownload, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import Loader from '../components/Loader';
-import api from '../utils/api';
+import api, { getApiUrl } from '../utils/api';
+import { getFileUrl } from '../utils/fileHelper';
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Get the API URL for this component
+const API_URL = getApiUrl();
+console.log('Resume component using API URL:', API_URL);
 
 const Resume = () => {
   const [resumeUrl, setResumeUrl] = useState(null);
@@ -23,10 +26,14 @@ const Resume = () => {
     const fetchResume = async () => {
       try {
         setLoading(true);
+        console.log('Fetching resume from:', `${API_URL}/resume/active`);
         const { data } = await api.get('/resume/active');
         
         if (data.success) {
-          setResumeUrl(`${API_URL}${data.resume.path}`);
+          // Use the fileHelper utility to get the correct URL for the file
+          const fileUrl = getFileUrl(data.resume.path);
+          console.log('Resume file URL:', fileUrl);
+          setResumeUrl(fileUrl);
         } else {
           setError('No resume found.');
         }

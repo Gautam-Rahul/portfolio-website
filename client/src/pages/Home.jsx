@@ -11,10 +11,13 @@ import {
   SiHtml5, SiCss3, SiTailwindcss
 } from 'react-icons/si';
 import { useTheme } from '../context/ThemeContext';
-import api from '../utils/api';
+import api, { getApiUrl } from '../utils/api';
+import { getFileUrl } from '../utils/fileHelper';
 import { ParticlesBackground } from '../components/ParticlesBackground';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Get the API URL for this component
+const API_URL = getApiUrl();
+console.log('Home component using API URL:', API_URL);
 
 const Home = () => {
   const { isDarkMode } = useTheme();
@@ -34,10 +37,12 @@ const Home = () => {
   useEffect(() => {
     const fetchResume = async () => {
       try {
+        console.log('Fetching resume from:', `${API_URL}/resume/active`);
         const { data } = await api.get('/resume/active');
         
         if (data.success) {
-          setResumeUrl(`${API_URL}${data.resume.path}`);
+          // Use the fileHelper utility to get the correct URL for the file
+          setResumeUrl(getFileUrl(data.resume.path));
         }
       } catch (err) {
         console.error('Error fetching resume:', err);

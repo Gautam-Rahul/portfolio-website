@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FaGithub, FaExternalLinkAlt, FaSearch } from 'react-icons/fa';
 import Loader from '../components/Loader';
-import api from '../utils/api';
+import api, { getApiUrl } from '../utils/api';
+import { getFileUrl } from '../utils/fileHelper';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Get the API URL for this component
+const API_URL = getApiUrl();
+console.log('Projects component using API URL:', API_URL);
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -17,6 +20,7 @@ const Projects = () => {
     const fetchProjects = async () => {
       try {
         setLoading(true);
+        console.log('Fetching projects from:', `${API_URL}/projects`);
         const { data } = await api.get('/projects');
         
         if (data.success) {
@@ -132,12 +136,20 @@ const Projects = () => {
 const ProjectCard = ({ project }) => {
   const { title, description, imageUrl, liveLink, repoLink, technologies } = project;
   
+  // Generate the correct image URL using the fileHelper
+  const getImageUrl = (url) => {
+    if (url.startsWith('http')) {
+      return url; // Already an absolute URL
+    }
+    return getFileUrl(url); // Use fileHelper for relative URLs
+  };
+  
   return (
     <div className="card overflow-hidden bg-white dark:bg-gray-700 rounded-xl group transition-all duration-300 hover:shadow-lg dark:hover:shadow-gray-700/40 h-full flex flex-col">
       {/* Image */}
       <div className="relative overflow-hidden h-56">
         <img
-          src={imageUrl.startsWith('http') ? imageUrl : `${API_URL}${imageUrl}`}
+          src={getImageUrl(imageUrl)}
           alt={title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
