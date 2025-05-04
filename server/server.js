@@ -28,7 +28,8 @@ const __dirname = path.dirname(__filename);
 // Middleware
 // Use a completely permissive CORS configuration
 app.use(cors({
-  origin: '*',
+ 
+  origin: ['https://rahulgtm.com', 'https://www.rahulgtm.com'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
