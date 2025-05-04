@@ -5,33 +5,21 @@ export const getApiUrl = () => {
   // Add debugging to check hostname
   console.log('Current hostname:', window.location.hostname);
   
-  // For production builds, use the VITE_API_URL from environment variables
-  if (import.meta.env.VITE_API_URL) {
-    console.log('Using VITE_API_URL:', import.meta.env.VITE_API_URL);
-    return import.meta.env.VITE_API_URL;
+  /* 
+   * ============================================================
+   * IMPORTANT: We are intentionally ignoring the VITE_API_URL
+   * environment variable and using mock data for all environments
+   * ============================================================
+   */
+  // For production builds, we would normally use VITE_API_URL, but we're ignoring it for now
+  if (false && import.meta.env.VITE_API_URL) {
+    console.log('Found VITE_API_URL but ignoring it to use mock data');
+    // return import.meta.env.VITE_API_URL;
   }
   
-  // For GitHub Pages deployment, use the Vercel backend URL
-  if (window.location.hostname.includes('github.io') || 
-      window.location.hostname.includes('gautam-rahul.github.io') ||
-      window.location.hostname.includes('rahulgtm.com')) {
-    console.log('Detected GitHub Pages or custom domain - would normally use Vercel backend');
-    console.log('However, we are now using MOCK DATA instead of API calls for all components');
-    // Return a dummy URL since we're not actually making API calls
-    return 'https://mock-api-not-used.example.com/api';
-  }
+  console.log('Using MOCK DATA for API calls - no backend connection required');
   
-  // For any non-localhost environment, use the Vercel backend
-  if (window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')) {
-    console.log('Non-localhost environment detected - would normally use Vercel backend');
-    console.log('However, we are now using MOCK DATA instead of API calls for all components');
-    // Return a dummy URL since we're not actually making API calls
-    return 'https://mock-api-not-used.example.com/api';
-  }
-  
-  // For local development, default to localhost test server
-  console.log('Local development but using MOCK DATA instead of API calls');
-  // Return a dummy URL since we're not actually making API calls
+  // Always return a dummy URL since we're not actually making API calls
   return 'https://mock-api-not-used.example.com/api';
 };
 

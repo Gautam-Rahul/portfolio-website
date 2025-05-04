@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaProjectDiagram, FaFileAlt, FaEnvelope, FaCalendarAlt } from 'react-icons/fa';
 import Loader from '../../components/Loader';
-import api from '../../utils/api';
+import api, { getApiUrl } from '../../utils/api';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Get the API URL for this component
+const API_URL = getApiUrl();
+console.log('Dashboard component using API URL:', API_URL);
 
 const Dashboard = () => {
   const [stats, setStats] = useState({

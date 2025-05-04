@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaEye, FaCheck, FaTimes, FaStar } from 'react-icons/fa';
 import Loader from '../../components/Loader';
 import { useAuth } from '../../context/AuthContext';
-import api from '../../utils/api';
+import api, { getApiUrl } from '../../utils/api';
+import { getFileUrl } from '../../utils/fileHelper';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Get the API URL for this component
+const API_URL = getApiUrl();
+console.log('ManageProjects component using API URL:', API_URL);
 
 const ManageProjects = () => {
   const { user } = useAuth();

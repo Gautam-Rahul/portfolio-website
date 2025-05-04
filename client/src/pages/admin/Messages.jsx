@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FaEnvelope, FaEnvelopeOpen, FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 import Loader from '../../components/Loader';
-import api from '../../utils/api';
+import api, { getApiUrl } from '../../utils/api';
+import { formatDistanceToNow } from 'date-fns';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Get the API URL for this component
+const API_URL = getApiUrl();
+console.log('Messages component using API URL:', API_URL);
 
 const Messages = () => {
   const [messages, setMessages] = useState([]);

@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { formatDistanceToNow } from 'date-fns';
 import { FaUpload, FaFileAlt, FaCheck, FaDownload, FaTrash, FaTimes } from 'react-icons/fa';
+import api, { getApiUrl } from '../../utils/api';
+import { getFileUrl } from '../../utils/fileHelper';
 import Loader from '../../components/Loader';
-import api from '../../utils/api';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Get the API URL for this component
+const API_URL = getApiUrl();
+console.log('ManageResume component using API URL:', API_URL);
 
 const ManageResume = () => {
   const [resumes, setResumes] = useState([]);
