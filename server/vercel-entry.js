@@ -77,6 +77,16 @@ app.get('/', (req, res) => {
   res.send('Portfolio API is running...');
 });
 
+// Add a test endpoint
+app.get('/api/test', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'API is working',
+    cors: 'CORS configuration is correctly set up',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
