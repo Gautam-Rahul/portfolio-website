@@ -28,6 +28,7 @@ const __dirname = path.dirname(__filename);
 // List of allowed origins for CORS
 const allowedOrigins = [
   'https://portfolio-website-theta-ten-47.vercel.app',
+  'https://www.rahulgtm.com/#/',
   'https://gautam-rahul.github.io',
   'https://gautam-rahul.github.io/portfolio-website',
   'http://localhost:5173',
