@@ -12,6 +12,16 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 const API_URL = getApiUrl();
 console.log('Resume component using API URL:', API_URL);
 
+// Static mock data for resume
+const MOCK_RESUME = {
+  _id: 'mock-resume-id',
+  filename: 'sample-resume.pdf',
+  path: 'https://www.africau.edu/images/default/sample.pdf', // Using a public sample PDF
+  isActive: true,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString()
+};
+
 const Resume = () => {
   const [resumeUrl, setResumeUrl] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,31 +31,20 @@ const Resume = () => {
   const [scale, setScale] = useState(1.2);
   const fileRef = useRef(null);
   
-  // Fetch resume URL
+  // Load mock resume data
   useEffect(() => {
-    const fetchResume = async () => {
-      try {
-        setLoading(true);
-        console.log('Fetching resume from:', `${API_URL}/resume/active`);
-        const { data } = await api.get('/resume/active');
-        
-        if (data.success) {
-          // Use the fileHelper utility to get the correct URL for the file
-          const fileUrl = getFileUrl(data.resume.path);
-          console.log('Resume file URL:', fileUrl);
-          setResumeUrl(fileUrl);
-        } else {
-          setError('No resume found.');
-        }
-      } catch (err) {
-        console.error('Error fetching resume:', err);
-        setError('Failed to load resume. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Simulate API loading
+    setLoading(true);
     
-    fetchResume();
+    try {
+      console.log('Using mock resume data instead of API call');
+      setResumeUrl(MOCK_RESUME.path);
+    } catch (err) {
+      console.error('Error setting mock resume:', err);
+      setError('Failed to load resume. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
   
   // Handle document load success

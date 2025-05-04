@@ -8,6 +8,37 @@ import { getFileUrl } from '../utils/fileHelper';
 const API_URL = getApiUrl();
 console.log('Projects component using API URL:', API_URL);
 
+// Static mock data for projects
+const MOCK_PROJECTS = [
+  {
+    _id: 'proj1',
+    title: 'E-Commerce Website',
+    description: 'A full-stack e-commerce platform with shopping cart, user authentication, and payment integration.',
+    imageUrl: 'https://picsum.photos/id/0/600/400',
+    liveLink: 'https://example.com/ecommerce',
+    repoLink: 'https://github.com/example/ecommerce',
+    technologies: ['React', 'Node.js', 'MongoDB', 'Express', 'Redux']
+  },
+  {
+    _id: 'proj2',
+    title: 'Task Management App',
+    description: 'A task management application with drag-and-drop functionality, task prioritization, and team collaboration.',
+    imageUrl: 'https://picsum.photos/id/1/600/400',
+    liveLink: 'https://example.com/tasks',
+    repoLink: 'https://github.com/example/tasks',
+    technologies: ['React', 'Firebase', 'Material UI', 'Redux']
+  },
+  {
+    _id: 'proj3',
+    title: 'Weather Dashboard',
+    description: 'A weather dashboard that provides real-time weather data, forecasts, and historical weather information.',
+    imageUrl: 'https://picsum.photos/id/2/600/400',
+    liveLink: 'https://example.com/weather',
+    repoLink: 'https://github.com/example/weather',
+    technologies: ['JavaScript', 'HTML', 'CSS', 'Weather API']
+  }
+];
+
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,26 +46,23 @@ const Projects = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
   
-  // Fetch projects from API
+  // Load mock projects data
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        setLoading(true);
-        console.log('Fetching projects from:', `${API_URL}/projects`);
-        const { data } = await api.get('/projects');
-        
-        if (data.success) {
-          setProjects(data.projects);
-        }
-      } catch (err) {
-        console.error('Error fetching projects:', err);
-        setError('Failed to load projects. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Simulate API loading
+    setLoading(true);
     
-    fetchProjects();
+    try {
+      console.log('Using mock projects data instead of API call');
+      // Wait a bit to simulate network request
+      setTimeout(() => {
+        setProjects(MOCK_PROJECTS);
+        setLoading(false);
+      }, 1000);
+    } catch (err) {
+      console.error('Error setting mock projects:', err);
+      setError('Failed to load projects. Please try again later.');
+      setLoading(false);
+    }
   }, []);
   
   // Get unique technologies from all projects
@@ -136,20 +164,12 @@ const Projects = () => {
 const ProjectCard = ({ project }) => {
   const { title, description, imageUrl, liveLink, repoLink, technologies } = project;
   
-  // Generate the correct image URL using the fileHelper
-  const getImageUrl = (url) => {
-    if (url.startsWith('http')) {
-      return url; // Already an absolute URL
-    }
-    return getFileUrl(url); // Use fileHelper for relative URLs
-  };
-  
   return (
     <div className="card overflow-hidden bg-white dark:bg-gray-700 rounded-xl group transition-all duration-300 hover:shadow-lg dark:hover:shadow-gray-700/40 h-full flex flex-col">
       {/* Image */}
       <div className="relative overflow-hidden h-56">
         <img
-          src={getImageUrl(imageUrl)}
+          src={imageUrl}
           alt={title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />

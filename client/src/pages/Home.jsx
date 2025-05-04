@@ -19,6 +19,16 @@ import { ParticlesBackground } from '../components/ParticlesBackground';
 const API_URL = getApiUrl();
 console.log('Home component using API URL:', API_URL);
 
+// Static mock data for resume
+const MOCK_RESUME = {
+  _id: 'mock-resume-id',
+  filename: 'sample-resume.pdf',
+  path: 'https://www.africau.edu/images/default/sample.pdf', // Using a public sample PDF
+  isActive: true,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString()
+};
+
 const Home = () => {
   const { isDarkMode } = useTheme();
   const [resumeUrl, setResumeUrl] = useState(null);
@@ -35,23 +45,17 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const fetchResume = async () => {
-      try {
-        console.log('Fetching resume from:', `${API_URL}/resume/active`);
-        const { data } = await api.get('/resume/active');
-        
-        if (data.success) {
-          // Use the fileHelper utility to get the correct URL for the file
-          setResumeUrl(getFileUrl(data.resume.path));
-        }
-      } catch (err) {
-        console.error('Error fetching resume:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Simulate API loading
+    setLoading(true);
     
-    fetchResume();
+    try {
+      console.log('Using mock resume data instead of API call for Home component');
+      setResumeUrl(MOCK_RESUME.path);
+    } catch (err) {
+      console.error('Error setting mock resume:', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const socialLinks = [

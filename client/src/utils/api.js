@@ -15,20 +15,24 @@ export const getApiUrl = () => {
   if (window.location.hostname.includes('github.io') || 
       window.location.hostname.includes('gautam-rahul.github.io') ||
       window.location.hostname.includes('rahulgtm.com')) {
-    console.log('Detected GitHub Pages or custom domain, using Vercel backend');
-    // We'll update this URL after deploying the test server
-    return 'https://portfolio-webite-test.vercel.app/api';
+    console.log('Detected GitHub Pages or custom domain - would normally use Vercel backend');
+    console.log('However, we are now using MOCK DATA instead of API calls for all components');
+    // Return a dummy URL since we're not actually making API calls
+    return 'https://mock-api-not-used.example.com/api';
   }
   
   // For any non-localhost environment, use the Vercel backend
   if (window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')) {
-    console.log('Non-localhost environment detected, using Vercel backend');
-    return 'https://portfolio-webite-server.vercel.app/api';
+    console.log('Non-localhost environment detected - would normally use Vercel backend');
+    console.log('However, we are now using MOCK DATA instead of API calls for all components');
+    // Return a dummy URL since we're not actually making API calls
+    return 'https://mock-api-not-used.example.com/api';
   }
   
-  // For local development, default to localhost
-  console.log('Defaulting to localhost');
-  return 'http://localhost:5000/api';
+  // For local development, default to localhost test server
+  console.log('Local development but using MOCK DATA instead of API calls');
+  // Return a dummy URL since we're not actually making API calls
+  return 'https://mock-api-not-used.example.com/api';
 };
 
 const API_URL = getApiUrl();
