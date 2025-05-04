@@ -1,0 +1,13 @@
+{
+  "name": "portfolio-website",
+  "version": "1.0.0",
+  "description": "Portfolio website with client and server",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "echo 'Building project...'"
+  },
+  "license": "MIT"
+} 
