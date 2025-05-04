@@ -7,6 +7,11 @@ export const getApiUrl = () => {
     return import.meta.env.VITE_API_URL;
   }
   
+  // For GitHub Pages deployment, use the Vercel backend URL
+  if (window.location.hostname.includes('github.io')) {
+    return 'https://portfolio-webite-server.vercel.app/api';
+  }
+  
   // For local development, default to localhost
   return 'http://localhost:5000/api';
 };

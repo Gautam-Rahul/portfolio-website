@@ -1,4 +1,5 @@
 // Helper functions for handling file URLs in different environments
+import { getApiUrl } from './api';
 
 /**
  * Gets the correct URL for a file based on the environment
@@ -8,14 +9,14 @@
 export const getFileUrl = (filePath) => {
   if (!filePath) return '';
   
-  const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const apiBaseUrl = getApiUrl();
   
-  // For Vercel deployment, use the special uploads endpoint
-  if (apiBaseUrl.includes('vercel.app')) {
+  // For Vercel deployment or GitHub Pages deployment, use the special uploads endpoint
+  if (apiBaseUrl.includes('vercel.app') || window.location.hostname.includes('github.io')) {
     return `${apiBaseUrl}/uploads?filename=${encodeURIComponent(filePath)}`;
   }
   
-  // For GitHub Pages or local development, use the direct path
+  // For local development, use the direct path
   return `${apiBaseUrl.replace('/api', '')}/uploads/${filePath}`;
 };
 
